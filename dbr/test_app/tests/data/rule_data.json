@@ -1,0 +1,169 @@
+{
+  "variable_type_operators": {
+    "string": [
+      {
+        "label": "Contains",
+        "input_type": "text",
+        "name": "contains"
+      },
+      {
+        "label": "Ends With",
+        "input_type": "text",
+        "name": "ends_with"
+      },
+      {
+        "label": "Equal To",
+        "input_type": "text",
+        "name": "equal_to"
+      },
+      {
+        "label": "Equal To (case insensitive)",
+        "input_type": "text",
+        "name": "equal_to_case_insensitive"
+      },
+      {
+        "label": "Matches Regex",
+        "input_type": "text",
+        "name": "matches_regex"
+      },
+      {
+        "label": "Non Empty",
+        "input_type": "none",
+        "name": "non_empty"
+      },
+      {
+        "label": "Starts With",
+        "input_type": "text",
+        "name": "starts_with"
+      }
+    ],
+    "select": [
+      {
+        "label": "Contains",
+        "input_type": "select",
+        "name": "contains"
+      },
+      {
+        "label": "Does Not Contain",
+        "input_type": "select",
+        "name": "does_not_contain"
+      }
+    ],
+    "numeric": [
+      {
+        "label": "Equal To",
+        "input_type": "numeric",
+        "name": "equal_to"
+      },
+      {
+        "label": "Greater Than",
+        "input_type": "numeric",
+        "name": "greater_than"
+      },
+      {
+        "label": "Greater Than Or Equal To",
+        "input_type": "numeric",
+        "name": "greater_than_or_equal_to"
+      },
+      {
+        "label": "Less Than",
+        "input_type": "numeric",
+        "name": "less_than"
+      },
+      {
+        "label": "Less Than Or Equal To",
+        "input_type": "numeric",
+        "name": "less_than_or_equal_to"
+      }
+    ],
+    "boolean": [
+      {
+        "label": "Is False",
+        "input_type": "none",
+        "name": "is_false"
+      },
+      {
+        "label": "Is True",
+        "input_type": "none",
+        "name": "is_true"
+      }
+    ],
+    "select_multiple": [
+      {
+        "label": "Contains All",
+        "input_type": "select_multiple",
+        "name": "contains_all"
+      },
+      {
+        "label": "Is Contained By",
+        "input_type": "select_multiple",
+        "name": "is_contained_by"
+      },
+      {
+        "label": "Shares At Least One Element With",
+        "input_type": "select_multiple",
+        "name": "shares_at_least_one_element_with"
+      },
+      {
+        "label": "Shares Exactly One Element With",
+        "input_type": "select_multiple",
+        "name": "shares_exactly_one_element_with"
+      },
+      {
+        "label": "Shares No Elements With",
+        "input_type": "select_multiple",
+        "name": "shares_no_elements_with"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "label": "Order More",
+      "params": [
+        {
+          "label": "Number To Order",
+          "fieldType": "numeric",
+          "name": "number_to_order"
+        }
+      ],
+      "name": "order_more"
+    },
+    {
+      "label": "Put On Sale",
+      "params": [
+        {
+          "label": "Sale Percentage",
+          "fieldType": "numeric",
+          "name": "sale_percentage"
+        }
+      ],
+      "name": "put_on_sale"
+    }
+  ],
+  "variables": [
+    {
+      "label": "Current Inventory",
+      "options": [],
+      "field_type": "numeric",
+      "name": "current_inventory"
+    },
+    {
+      "label": "Current Month",
+      "options": [],
+      "field_type": "string",
+      "name": "current_month"
+    },
+    {
+      "label": "Days until expiration",
+      "options": [],
+      "field_type": "numeric",
+      "name": "expiration_days"
+    },
+    {
+      "label": "Goes Well With",
+      "options": [],
+      "field_type": "select",
+      "name": "goes_well_with"
+    }
+  ]
+}
