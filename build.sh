@@ -8,6 +8,7 @@ cp LICENSE.md build/
 cp -r dbr/django_business_rules build/
 cd build
 python setup.py sdist
+python setup.py bdist_wheel
 cd ..
 
 docker build -t maciejpolanczyk/dbr-e2e-2 -f conf/e2e/python2/Dockerfile .
