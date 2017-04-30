@@ -9,13 +9,13 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-business-rules',
-    version='1.0.0',
+    version='1.0.1',
     packages=find_packages(exclude=['*.tests']),
     include_package_data=True,
     license='BSD License',
     description='Django Business Rules is a simple Django app to support business rules.',
     long_description=README,
-    url='',
+    url='https://github.com/maciejpolanczyk/django-business-rules/',
     author='Maciej Polanczyk',
     author_email='maciej.polanczyk@gmail.com',
     classifiers=[

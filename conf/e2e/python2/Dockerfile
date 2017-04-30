@@ -22,8 +22,8 @@ RUN pip install --upgrade pip wheel
 RUN pip install django
 
 # Install plugin (used COPY instead of ADD because ADD unzips)
-COPY build/dist/django-business-rules-1.0.0.tar.gz django-business-rules-1.0.0.tar.gz
-RUN pip install django-business-rules-1.0.0.tar.gz
+COPY build/dist/django-business-rules-1.0.1.tar.gz django-business-rules-1.0.1.tar.gz
+RUN pip install django-business-rules-1.0.1.tar.gz
 
 # Install requirements for tests
 ADD dbr/requirements-development.txt requirements-development.txt
