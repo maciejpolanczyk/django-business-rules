@@ -32,7 +32,7 @@ class ProductVariables(BaseVariables):
 
     @string_rule_variable()
     def current_month(self):
-        return timezone.now().strftime("%B")
+        return timezone.now().strftime('%B')
 
     @select_rule_variable(options=Products.top_holiday_items())
     def goes_well_with(self):
@@ -44,12 +44,12 @@ class ProductActions(BaseActions):
     def __init__(self, product):
         self.product = product
 
-    @rule_action(params={"sale_percentage": FIELD_NUMERIC})
+    @rule_action(params={'sale_percentage': FIELD_NUMERIC})
     def put_on_sale(self, sale_percentage):
         self.product.price *= (1.0 - sale_percentage)
         self.product.save()
 
-    @rule_action(params={"number_to_order": FIELD_NUMERIC})
+    @rule_action(params={'number_to_order': FIELD_NUMERIC})
     def order_more(self, number_to_order):
         ProductOrder.objects.create(product=self.product,
                                     quantity=number_to_order,

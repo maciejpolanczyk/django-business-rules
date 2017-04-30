@@ -44,6 +44,13 @@ class BusinessRuleTests(TestCase):
         ProductBusinessRule.generate()
         self.assertTrue(BusinessRuleModel.objects.filter(name=expected_name).exists())
 
+    def test_should_create_rule_model_in_db_with_empty_dict_as_rule(self):
+        expected_name = 'django_business_rules.tests.product_business_rule.ProductBusinessRule'
+        expected_rules = '{}'
+        self.assertFalse(BusinessRuleModel.objects.filter(name=expected_name).exists())
+        ProductBusinessRule.generate()
+        self.assertEqual(BusinessRuleModel.objects.get(name=expected_name).rules, expected_rules)
+
     def test_should_update_rule_model_in_db(self):
         # GIVEN
         expected_name = 'django_business_rules.tests.product_business_rule.ProductBusinessRule'
@@ -79,17 +86,17 @@ class BusinessRuleTests(TestCase):
         self.assertFalse(BusinessRuleModel.objects.filter(name=expected_name).exists())
         ProductBusinessRule.generate()
         # WHEN
-        ProductBusinessRule.save_rules({"key1": "value1"})
+        ProductBusinessRule.save_rules({'key1': 'value1'})
         # THEN
         self.assertEqual(BusinessRuleModel.objects.get(name=expected_name).rules, expected_rules)
 
     def test_should_get_rules_from_db(self):
         # GIVEN
         expected_name = 'django_business_rules.tests.product_business_rule.ProductBusinessRule'
-        expected_rules = {"key1": "value1"}
+        expected_rules = {'key1': 'value1'}
         self.assertFalse(BusinessRuleModel.objects.filter(name=expected_name).exists())
         ProductBusinessRule.generate()
-        ProductBusinessRule.save_rules({"key1": "value1"})
+        ProductBusinessRule.save_rules({'key1': 'value1'})
         # WHEN
         actual_rules = ProductBusinessRule.get_rules()
         # THEN
