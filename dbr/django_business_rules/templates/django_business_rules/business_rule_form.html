@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+{% load static from staticfiles %}
+
+{% block title %}
+    {% trans 'Setting rules' %}
+{%  endblock %}
+{% block extrahead %}
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+    <script src="{% static 'django_business_rules/js/lib/business-rules/conditions-builder.js' %}" type="text/javascript"></script>
+    <script src="{% static 'django_business_rules/js/lib/business-rules/actions-builder.js' %}" type="text/javascript"></script>
+    <script src="{% static 'django_business_rules/js/dbr.js' %}" type="text/javascript"></script>
+{% endblock %}
+{% block extrastyle %}
+    <link rel="stylesheet" href="{% static 'django_business_rules/css/dbr.css' %}" />
+{% endblock %}
+
+{% block branding %} {% blocktrans with rule_name=form.instance.name %}Business Rules: {{ rule_name }} {% endblocktrans %} {% endblock %}
+
+{% block breadcrumbs %} <div class="breadcrumbs"></div> {% endblock %}
+
+{% block content %}
+
+    <div>{{ form.instance.description }}</div>
+
+    <h2> {% trans 'When these conditions are met...' %} </h2>
+    <div id="conditions"></div>
+
+    <h2> {% trans 'Do these actions...' %} </h2>
+    <div id="actions"></div>
+
+
+
+  <form id="br_form" name="br_form" action="" method="post">{% csrf_token %}
+
+      <input type="hidden" value='{{ form.instance.rule_data }}' id="rule_data" name="rule_data" />
+      <input type="hidden" value='{{ form.instance.rules }}' id="rules" name="rules" />
+
+
+      <a class="button" href="{% url 'django_business_rules:business-rule-list' %}">{% trans 'Back to list' %}</a>
+      <input type="submit" value="{% trans 'Save' %}" id="save" name="save" />
+  </form>
+
+{% endblock %}

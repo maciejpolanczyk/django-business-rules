@@ -1,0 +1,31 @@
+.git
+.gitignore
+.idea
+
+# Django Business Rules
+**/*.sqlite
+**/*.sqlite3
+.dockerignore
+build.sh
+README.md
+test.sh
+
+# Coverage reports
+cover/
+.coverage
+.coveragerc
+
+# PyLint settings
+.pylintrc
+
+# Log files
+**/*.log
+
+# Translations
+**/*.mo
+**/*.pot
+
+# Compiled files
+**/__pycache__*
+**/*.py[cod]
+**/*$py.class*

@@ -1,0 +1,15 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+{% block branding %} {% trans 'Business Rules' %} {% endblock %}
+{% block breadcrumbs %} <div class="breadcrumbs"></div> {% endblock %}
+{% block content %}
+    <ul>
+        {% for business_rule in business_rule_list %}
+            <li>
+                <a href="{% url 'django_business_rules:business-rule-form' pk=business_rule.pk %}">
+                    {{ business_rule.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
