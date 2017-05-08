@@ -50,6 +50,14 @@ class BusinessRule(object):
         )
 
     @classmethod
+    def get_value(cls, obj):
+        return engine.get_value(
+            rule_list=cls.get_rules(),
+            defined_variables=cls._get_variables_instance(obj),
+            defined_actions=cls._get_actions_instance(obj)
+        )
+
+    @classmethod
     def _get_variables_instance(cls, obj):
         return cls.variables(obj)
 

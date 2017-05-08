@@ -1,2 +1,2 @@
-business-rules==1.0.1
-Django==1.11
+git+https://github.com/maciejpolanczyk/business-rules.git#egg=business-rules==1.0.2rc1
+Django==1.11.1

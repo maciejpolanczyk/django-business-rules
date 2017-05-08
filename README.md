@@ -14,6 +14,7 @@ Business rules engine is implemented with [business-rules][business-rules-lib]
 
 Install using `pip`...
 
+    pip install git+https://github.com/maciejpolanczyk/business-rules.git#egg=business-rules==1.0.2rc1
     pip install django-business-rules
 
 Add `'django_business_rules'` to your `INSTALLED_APPS` setting.
@@ -31,6 +32,10 @@ Let's take a look at a quick example of using Business rules plugin.
 Startup up a new project like so...
 
     pip install django
+    # if you need "get_value" feature from business-rules engine
+    # please use this fork
+    # otherway you can use basic version from PyPi
+    pip install git+https://github.com/maciejpolanczyk/business-rules.git#egg=business-rules==1.0.2rc1
     pip install django-business-rules
     django-admin.py startproject example .
     ./manage.py startapp test_app

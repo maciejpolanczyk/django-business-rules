@@ -8,8 +8,12 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-# Install libs
+# Install libs (git needed to install business-rules from fork)
 RUN apt-get update && apt-get install -y \
+    binutils \
+    gdal-bin \
+    git \
+    libproj-dev \
     python3-dev \
     python3-pip \
     python3-setuptools \
@@ -22,10 +26,11 @@ RUN pip3 install --upgrade pip wheel
 
 # Install requirements
 RUN pip3 install django
+RUN pip3 install git+https://github.com/maciejpolanczyk/business-rules.git#egg=business-rules==1.0.2rc1
 
 # Install plugin (used COPY instead of ADD because ADD unzips)
-COPY build/dist/django-business-rules-1.0.1.tar.gz django-business-rules-1.0.1.tar.gz
-RUN pip3 install django-business-rules-1.0.1.tar.gz
+COPY build/dist/django-business-rules-1.0.2.tar.gz django-business-rules-1.0.2.tar.gz
+RUN pip3 install django-business-rules-1.0.2.tar.gz
 
 # Install requirements for tests
 ADD dbr/requirements-development.txt requirements-development.txt

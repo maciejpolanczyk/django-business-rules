@@ -130,3 +130,31 @@ class BusinessRuleTests(TestCase):
             defined_actions=mock_for_actions,
             stop_on_first_trigger=True
         )
+
+    @patch.object(ProductBusinessRule, 'get_rules')
+    @patch.object(ProductBusinessRule, '_get_variables_instance')
+    @patch.object(ProductBusinessRule, '_get_actions_instance')
+    @patch.object(engine, 'get_value')
+    def test_should_execute_get_value_with_correct_parameters(
+        self,
+        mock_for_get_value,
+        mock_for_get_actions,
+        mock_for_get_variables,
+        mock_for_get_rules
+    ):
+        # GIVEN
+        mock_for_rules = Mock()
+        mock_for_get_rules.return_value = mock_for_rules
+        mock_for_variables = Mock()
+        mock_for_get_variables.return_value = mock_for_variables
+        mock_for_actions = Mock()
+        mock_for_get_actions.return_value = mock_for_actions
+        mock_for_product = Mock()
+        # WHEN
+        ProductBusinessRule.get_value(mock_for_product)
+        # THEN
+        mock_for_get_value.assert_called_once_with(
+            rule_list=mock_for_rules,
+            defined_variables=mock_for_variables,
+            defined_actions=mock_for_actions,
+        )
