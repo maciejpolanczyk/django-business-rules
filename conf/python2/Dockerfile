@@ -1,25 +1,10 @@
-FROM ubuntu:14.04
-
-MAINTAINER Maciej Polanczyk  <maciej.polanczyk@stxnext.pl>
-
-# Set the locale
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
-# Install libs
-RUN apt-get update && apt-get install -y \
-    python-pip \
-    --no-install-recommends && \
-    rm -rf /var/lib/apt/lists; rm -rf /tmp/*; \
-    apt-get autoremove -y
+FROM python:2.7
 
 # Wheel install (needed for proper installing some other libraries), pip upgrade
 RUN pip install --upgrade pip wheel
 
 # Install requirements
-ADD dbr/requirements.txt requirements.txt
+ADD dbr/requirements-django1.11.txt requirements.txt
 RUN pip install -r requirements.txt
 
 ADD dbr/requirements-development.txt requirements-development.txt

@@ -19,11 +19,12 @@ class Products(models.Model):
     def __str__(self):
         return '{} {}'.format(self.price, self.current_inventory)
 
+
 @python_2_unicode_compatible
 class ProductOrder(models.Model):
     expiration_date = models.DateField()
     quantity = models.IntegerField(default=0)
-    product = models.ForeignKey(Products)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
 
     def __str__(self):
         return '{} {} {}'.format(self.product, self.quantity, self.expiration_date)
