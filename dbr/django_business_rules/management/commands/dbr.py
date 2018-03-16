@@ -27,7 +27,7 @@ class Command(BaseCommand):
         result = []
         root_path = settings.BASE_DIR
         self._debug('Looking for business rules in: {} ...'.format(root_path), options)
-        for module_loader, module_name, is_pkg in pkgutil.walk_packages():
+        for module_loader, module_name, is_pkg in pkgutil.walk_packages([root_path]):
             if self._is_business_rule_module(module_loader, module_name, is_pkg, root_path):
                 module = module_loader.find_module(module_name).load_module(module_name)
                 result.extend(self._get_business_rule_classes(module))

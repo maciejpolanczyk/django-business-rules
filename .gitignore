@@ -70,3 +70,5 @@ gen
 
 # SQLite
 *.sqlite3
+
+temp/

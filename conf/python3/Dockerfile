@@ -1,27 +1,10 @@
-FROM ubuntu:14.04
-
-MAINTAINER Maciej Polanczyk  <maciej.polanczyk@stxnext.pl>
-
-# Set the locale
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
-# Install libs
-RUN apt-get update && apt-get install -y \
-    python3-dev \
-    python3-pip \
-    python3-setuptools \
-    --no-install-recommends && \
-    rm -rf /var/lib/apt/lists; rm -rf /tmp/*; \
-    apt-get autoremove -y
+FROM python:3.6
 
 # Wheel install (needed for proper installing some other libraries), pip upgrade
 RUN pip3 install --upgrade pip wheel
 
 # Install requirements
-ADD dbr/requirements.txt requirements.txt
+ADD dbr/requirements-django2.0.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
 ADD dbr/requirements-development.txt requirements-development.txt

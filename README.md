@@ -8,7 +8,7 @@ Business rules engine is implemented with [business-rules][business-rules-lib]
 # Requirements
 
 * Python (2.7, 3.2, 3.3, 3.4, 3.5)
-* Django (1.9, 1.10, 1.11)
+* Django (1.9, 1.10, 1.11, 2.0)
 
 # Installation
 
@@ -36,10 +36,22 @@ Startup up a new project like so...
     ./manage.py startapp test_app
 
 
-Now edit the `example/urls.py` module in your project:
+Now edit the `example/urls.py` module in your project (django 2.x):
 
 ```python
-from django.conf.urls import url, include
+from django.urls import include, paths, re_path
+
+# Include the business rules URLconf
+urlpatterns = [
+    ...
+    re_path(r'^dbr/', include('django_business_rules.urls', namespace='django_business_rules'))
+]
+```
+
+Now edit the `example/urls.py` module in your project (django 1.x):
+
+```python
+from django.conf.urls import include, url
 
 # Include the business rules URLconf
 urlpatterns = [
@@ -82,7 +94,7 @@ class Products(models.Model):
 class ProductOrder(models.Model):
     expiration_date = models.DateField()
     quantity = models.IntegerField(default=0)
-    product = models.ForeignKey(Products)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
 ```
 
 Add variables and actions to your `test_app/rules.py` module (more about variables and actions can be found [here][business-rules-lib]):
