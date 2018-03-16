@@ -1,23 +1,23 @@
 FROM python:3.6
 
 # Wheel install (needed for proper installing some other libraries), pip upgrade
-RUN pip3 install --upgrade pip wheel
+RUN pip install --upgrade pip wheel
 
 # Install requirements
-RUN pip3 install django
+RUN pip install django
 
 # Install plugin (used COPY instead of ADD because ADD unzips)
 COPY build/dist/django-business-rules-1.0.2.tar.gz django-business-rules-1.0.2.tar.gz
-RUN pip3 install django-business-rules-1.0.2.tar.gz
+RUN pip install django-business-rules-1.0.2.tar.gz
 
 # Install requirements for tests
 ADD dbr/requirements-development.txt requirements-development.txt
-RUN pip3 install -r requirements-development.txt
+RUN pip install -r requirements-development.txt
 
 # Add sources
 WORKDIR /usr/src/app
 RUN django-admin startproject example .
-RUN python3 manage.py startapp test_app
+RUN python manage.py startapp test_app
 ADD dbr/test_app/migrations /usr/src/app/test_app/migrations
 RUN rm /usr/src/app/test_app/tests.py
 ADD dbr/test_app/tests /usr/src/app/test_app/tests
@@ -28,8 +28,8 @@ RUN sed -i -e 's/import path/import include, path, re_path/g' /usr/src/app/examp
 RUN sed -i -e 's/]/re_path\(r"^dbr\/", include\("django_business_rules.urls", namespace="django_business_rules"\)\) ]/g' /usr/src/app/example/urls.py
 
 # Create DB
-RUN python3 manage.py makemigrations
-RUN python3 manage.py migrate --traceback
+RUN python manage.py makemigrations
+RUN python manage.py migrate --traceback
 
 # Generate rules
 RUN python3 manage.py dbr

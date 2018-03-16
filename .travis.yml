@@ -1,0 +1,27 @@
+language: python
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+
+env:
+  - DJANGO=1.9
+  - DJANGO=1.10
+  - DJANGO=1.11
+  - DJANGO=2.0
+
+matrix:
+  exclude:
+  - python: "2.7"
+    env: DJANGO=2.0
+
+install:
+  - pip install -r dbr/requirements-development.txt
+  - pip install business-rules==1.0.1
+  - pip install Django==$DJANGO
+
+script:
+  - cd dbr
+  - python manage.py migrate --traceback
+  - python manage.py test
