@@ -1,6 +1,9 @@
 Django Business Rules
 ==============
 
+[![build-status-image]][travis]
+[![pypi-version]][pypi]
+
 # Overview
 With this plugin django users (customers or administrators) can setup business rules with html forms. Default layout is similar to django admin panel and can be easily overridden.
 Business rules engine is implemented with [business-rules][business-rules-lib]
@@ -176,4 +179,8 @@ That's it, we're done!
 
 You can now open the list of business rules in your browser at `http://127.0.0.1:8000/dbr/` and edit them.
 
+[build-status-image]: https://travis-ci.org/maciejpolanczyk/django-business-rules.svg?branch=master
+[travis]: https://travis-ci.org/maciejpolanczyk/django-business-rules?branch=master
+[pypi-version]: https://pypip.in/version/django-business-rules/badge.svg
+[pypi]: https://pypi.python.org/pypi/django-business-rules
 [business-rules-lib]: https://github.com/venmo/business-rules
