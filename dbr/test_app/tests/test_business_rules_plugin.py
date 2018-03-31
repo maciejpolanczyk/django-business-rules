@@ -2,13 +2,13 @@ from __future__ import unicode_literals
 
 import datetime
 import json
-from mock import patch, Mock
 import os
 
-import factory
 from django.db.models import signals
 from django.test import TestCase
 from django.utils import timezone
+import factory
+from freezegun import freeze_time
 from model_mommy import mommy
 
 from test_app.rules import ProductBusinessRule
@@ -66,11 +66,7 @@ class BusinessRulesPluginTests(TestCase):
         self.assertEqual(product_not_for_sale_2.price, 200)
 
     @factory.django.mute_signals(signals.post_save)
-    @patch.object(
-        timezone,
-        'now',
-        Mock(return_value=datetime.datetime(2015, 6, 1, tzinfo=timezone.utc))
-    )
+    @freeze_time('2015, 6, 1')
     def test_should_execute_rules_2(self):
         # GIVEN
         product_for_order = mommy.make(Product, current_inventory=4, price=200)
@@ -79,11 +75,7 @@ class BusinessRulesPluginTests(TestCase):
         self._assert_rule_executed(product_for_order, product_not_for_order)
 
     @factory.django.mute_signals(signals.post_save)
-    @patch.object(
-        timezone,
-        'now',
-        Mock(return_value=datetime.datetime(2015, 12, 1, tzinfo=timezone.utc))
-    )
+    @freeze_time('2015, 12, 1')
     def test_should_execute_rules_3(self):
         # GIVEN
         product_for_order = mommy.make(Product, current_inventory=19, price=200)

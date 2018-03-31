@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 
+from mock import patch, MagicMock
+
 from django.core.management import call_command
 from django.test.testcases import TestCase
 from django.utils.six import StringIO
-from mock import patch, MagicMock
 
 from django_business_rules.management.commands import dbr
 from django_business_rules.management.commands.dbr import BusinessRuleGenerateException

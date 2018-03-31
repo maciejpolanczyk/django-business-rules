@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
 
+from mock import patch, Mock
+
 from business_rules import engine
 from django.test import TestCase
-from mock import patch, Mock
 
 from django_business_rules.business_rule import BusinessRule
 from django_business_rules.models import BusinessRuleModel
