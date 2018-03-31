@@ -8,6 +8,7 @@ from django.test.testcases import TestCase
 from django.utils.six import StringIO
 
 from django_business_rules.models import BusinessRuleModel
+
 from test_app.rules import ProductBusinessRule
 from test_app.tests.data.test_resource_provider import TestResourceProvider
 
