@@ -158,12 +158,6 @@
       "options": [],
       "field_type": "numeric",
       "name": "expiration_days"
-    },
-    {
-      "label": "Goes Well With",
-      "options": [],
-      "field_type": "select",
-      "name": "goes_well_with"
     }
   ]
 }

@@ -10,7 +10,7 @@ Business rules engine is implemented with [business-rules][business-rules-lib]
 
 # Requirements
 
-* Python (2.7, 3.2, 3.3, 3.4, 3.5)
+* Python (2.7, 3.4, 3.5, 3.6)
 * Django (1.9, 1.10, 1.11, 2.0)
 
 # Installation
@@ -33,8 +33,7 @@ Let's take a look at a quick example of using Business rules plugin.
 ## Setup
 Startup up a new project like so...
 
-    pip install django
-    pip install django-business-rules
+    pip install django django-business-rules
     django-admin.py startproject example .
     ./manage.py startapp test_app
 
@@ -42,7 +41,7 @@ Startup up a new project like so...
 Now edit the `example/urls.py` module in your project (django 2.x):
 
 ```python
-from django.urls import include, paths, re_path
+from django.urls import include, path, re_path
 
 # Include the business rules URLconf
 urlpatterns = [
@@ -80,8 +79,10 @@ Add models to your `test_app/model.py` module:
 ```python
 from django.db import models
 
-class Products(models.Model):
-    related_products = models.ManyToManyField('Products')
+
+class Product(models.Model):
+    name = models.TextField()
+    related_products = models.ManyToManyField('Product', blank=True)
     current_inventory = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
 
@@ -89,15 +90,11 @@ class Products(models.Model):
     def orders(self):
         return list(self.productorder_set.all())
 
-    @staticmethod
-    def top_holiday_items():
-        return Products.objects.all()
-
 
 class ProductOrder(models.Model):
     expiration_date = models.DateField()
     quantity = models.IntegerField(default=0)
-    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
 ```
 
 Add variables and actions to your `test_app/rules.py` module (more about variables and actions can be found [here][business-rules-lib]):
@@ -110,12 +107,9 @@ from business_rules.fields import FIELD_NUMERIC
 from business_rules.variables import BaseVariables, numeric_rule_variable, \
     string_rule_variable, select_rule_variable
 from django.utils import timezone
-
-from test_app.models import Products
-
-from test_app.models import ProductOrder
-
 from django_business_rules.business_rule import BusinessRule
+
+from test_app.models import Product, ProductOrder
 
 
 class ProductVariables(BaseVariables):
@@ -135,11 +129,7 @@ class ProductVariables(BaseVariables):
 
     @string_rule_variable()
     def current_month(self):
-        return timezone.now().strftime("%B")
-
-    @select_rule_variable(options=Products.top_holiday_items())
-    def goes_well_with(self):
-        return [] # self.product.related_products
+        return timezone.now().strftime('%B')
 
 
 class ProductActions(BaseActions):
@@ -147,21 +137,49 @@ class ProductActions(BaseActions):
     def __init__(self, product):
         self.product = product
 
-    @rule_action(params={"sale_percentage": FIELD_NUMERIC})
+    @rule_action(params={'sale_percentage': FIELD_NUMERIC})
     def put_on_sale(self, sale_percentage):
         self.product.price *= (1.0 - sale_percentage)
         self.product.save()
 
-    @rule_action(params={"number_to_order": FIELD_NUMERIC})
+    @rule_action(params={'number_to_order': FIELD_NUMERIC})
     def order_more(self, number_to_order):
-        ProductOrder.objects.create(product_id=self.product.id,
-                                    quantity=number_to_order,
-                                    expiration_date=timezone.now() + timezone.timedelta(weeks=4))
+        ProductOrder.objects.create(
+            product=self.product,
+            quantity=number_to_order,
+            expiration_date=timezone.now() + timezone.timedelta(weeks=4)
+        )
 
 
 class ProductBusinessRule(BusinessRule):
+    name = 'Product rules'
     variables = ProductVariables
     actions = ProductActions
+```
+
+Add triggering defined rules on django post_save signal to your `test_app/signals.py` module:
+
+```python
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from test_app.models import Product
+from test_app.rules import ProductBusinessRule
+
+
+@receiver(post_save, sender=Product)
+def execute_product_business_rules(sender, instance, **kwargs):
+    ProductBusinessRule.run_all(instance)
+```
+
+Register signals in `test_app/apps.py` module:
+
+```python
+class TestAppConfig(AppConfig):
+    name = 'test_app'
+
+    def ready(self):
+        import test_app.signals
 ```
 
 Create and execute migrations:
@@ -169,7 +187,7 @@ Create and execute migrations:
     ./manage.py makemigrations
     ./manage.py migrate
 
-Generate business rules:
+Generate business rules (currently this command doesn't support updates, previously stored business rules data will be overridden):
 
     ./manage.py dbr
 
@@ -177,7 +195,7 @@ That's it, we're done!
 
     ./manage.py runserver
 
-You can now open the list of business rules in your browser at `http://127.0.0.1:8000/dbr/` and edit them.
+You can now open the list of business rules in your browser at `http://127.0.0.1:8000/dbr/business-rule/` and edit them.
 
 [build-status-image]: https://travis-ci.org/maciejpolanczyk/django-business-rules.svg?branch=master
 [travis]: https://travis-ci.org/maciejpolanczyk/django-business-rules?branch=master
