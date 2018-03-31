@@ -1,18 +1,20 @@
 from __future__ import unicode_literals
 
+import datetime
 import json
+from mock import patch, Mock
 import os
 
-import datetime
+import factory
 from business_rules.engine import run_all
 from business_rules.utils import export_rule_data
+from django.db.models import signals
 from django.test import TestCase
 from django.utils import timezone
-from mock import patch, Mock
 from model_mommy import mommy
 
 from test_app.rules import ProductVariables, ProductActions
-from test_app.models import Products, ProductOrder
+from test_app.models import Product, ProductOrder
 from test_app.tests.data.test_resource_provider import TestResourceProvider
 
 
@@ -25,11 +27,12 @@ class BusinessRulesLibraryTests(TestCase):
         expected = self._get_rule_data()
         self.assertEqual(actual, expected)
 
+    @factory.django.mute_signals(signals.post_save)
     def test_should_execute_rules_1(self):
         # GIVEN
-        product_for_sale = mommy.make(Products, current_inventory=21, price=200)
-        product_not_for_sale_1 = mommy.make(Products, current_inventory=20, price=200)
-        product_not_for_sale_2 = mommy.make(Products, current_inventory=21, price=200)
+        product_for_sale = mommy.make(Product, current_inventory=21, price=200)
+        product_not_for_sale_1 = mommy.make(Product, current_inventory=20, price=200)
+        product_not_for_sale_2 = mommy.make(Product, current_inventory=21, price=200)
 
         product_orders_for_sale = mommy.make(
             ProductOrder,
@@ -49,7 +52,7 @@ class BusinessRulesLibraryTests(TestCase):
 
         rules = self._get_rules()
         # WHEN
-        for product in Products.objects.all():
+        for product in Product.objects.all():
             run_all(
                 rule_list=rules,
                 defined_variables=ProductVariables(product),
@@ -64,6 +67,7 @@ class BusinessRulesLibraryTests(TestCase):
         self.assertEqual(product_not_for_sale_1.price, 200)
         self.assertEqual(product_not_for_sale_2.price, 200)
 
+    @factory.django.mute_signals(signals.post_save)
     @patch.object(
         timezone,
         'now',
@@ -71,11 +75,12 @@ class BusinessRulesLibraryTests(TestCase):
     )
     def test_should_execute_rules_2(self):
         # GIVEN
-        product_for_order = mommy.make(Products, current_inventory=4, price=200)
-        product_not_for_order = mommy.make(Products, current_inventory=5, price=200)
+        product_for_order = mommy.make(Product, current_inventory=4, price=200)
+        product_not_for_order = mommy.make(Product, current_inventory=5, price=200)
         # WHEN & THEN
         self._assert_rule_executed(product_for_order, product_not_for_order)
 
+    @factory.django.mute_signals(signals.post_save)
     @patch.object(
         timezone,
         'now',
@@ -83,8 +88,8 @@ class BusinessRulesLibraryTests(TestCase):
     )
     def test_should_execute_rules_3(self):
         # GIVEN
-        product_for_order = mommy.make(Products, current_inventory=19, price=200)
-        product_not_for_order = mommy.make(Products, current_inventory=20, price=200)
+        product_for_order = mommy.make(Product, current_inventory=19, price=200)
+        product_not_for_order = mommy.make(Product, current_inventory=20, price=200)
         # WHEN & THEN
         self._assert_rule_executed(product_for_order, product_not_for_order)
 
@@ -116,7 +121,7 @@ class BusinessRulesLibraryTests(TestCase):
 
         rules = self._get_rules()
         # WHEN
-        for product in Products.objects.all():
+        for product in Product.objects.all():
             run_all(
                 rule_list=rules,
                 defined_variables=ProductVariables(product),

@@ -7,12 +7,9 @@ from business_rules.fields import FIELD_NUMERIC
 from business_rules.variables import BaseVariables, numeric_rule_variable, \
     string_rule_variable, select_rule_variable
 from django.utils import timezone
-
-from test_app.models import Products
-
-from test_app.models import ProductOrder
-
 from django_business_rules.business_rule import BusinessRule
+
+from test_app.models import Product, ProductOrder
 
 
 class ProductVariables(BaseVariables):
@@ -34,10 +31,6 @@ class ProductVariables(BaseVariables):
     def current_month(self):
         return timezone.now().strftime('%B')
 
-    @select_rule_variable(options=Products.top_holiday_items())
-    def goes_well_with(self):
-        return [] # self.product.related_products
-
 
 class ProductActions(BaseActions):
 
@@ -51,11 +44,14 @@ class ProductActions(BaseActions):
 
     @rule_action(params={'number_to_order': FIELD_NUMERIC})
     def order_more(self, number_to_order):
-        ProductOrder.objects.create(product=self.product,
-                                    quantity=number_to_order,
-                                    expiration_date=timezone.now() + timezone.timedelta(weeks=4))
+        ProductOrder.objects.create(
+            product=self.product,
+            quantity=number_to_order,
+            expiration_date=timezone.now() + timezone.timedelta(weeks=4)
+        )
 
 
 class ProductBusinessRule(BusinessRule):
+    name = 'Product rules'
     variables = ProductVariables
     actions = ProductActions
