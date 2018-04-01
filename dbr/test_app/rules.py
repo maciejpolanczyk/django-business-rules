@@ -5,11 +5,11 @@ import datetime
 from business_rules.actions import BaseActions, rule_action
 from business_rules.fields import FIELD_NUMERIC
 from business_rules.variables import BaseVariables, numeric_rule_variable, \
-    string_rule_variable, select_rule_variable
+    string_rule_variable
 from django.utils import timezone
 from django_business_rules.business_rule import BusinessRule
 
-from test_app.models import Product, ProductOrder
+from test_app.models import ProductOrder
 
 
 class ProductVariables(BaseVariables):

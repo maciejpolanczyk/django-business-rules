@@ -34,17 +34,17 @@ class BusinessRulesLibraryTests(TestCase):
         product_not_for_sale_1 = mommy.make(Product, current_inventory=20, price=200)
         product_not_for_sale_2 = mommy.make(Product, current_inventory=21, price=200)
 
-        product_orders_for_sale = mommy.make(
+        mommy.make(
             ProductOrder,
             product=product_for_sale,
             expiration_date=timezone.now()+timezone.timedelta(days=4)
         )
-        product_orders_not_for_sale_1 = mommy.make(
+        mommy.make(
             ProductOrder,
             product=product_not_for_sale_1,
             expiration_date=timezone.now() + timezone.timedelta(days=4)
         )
-        product_orders_not_for_sale_2 = mommy.make(
+        mommy.make(
             ProductOrder,
             product=product_not_for_sale_2,
             expiration_date=timezone.now() + timezone.timedelta(days=5)
@@ -87,12 +87,12 @@ class BusinessRulesLibraryTests(TestCase):
 
     def _assert_rule_executed(self, product_for_order, product_not_for_order):
         # GIVEN
-        product_orders_for_order = mommy.make(
+        mommy.make(
             ProductOrder,
             product=product_for_order,
             expiration_date=datetime.datetime.now() + timezone.timedelta(days=4)
         )
-        product_orders_not_for_order = mommy.make(
+        mommy.make(
             ProductOrder,
             product=product_not_for_order,
             expiration_date=datetime.datetime.now() + timezone.timedelta(days=4)
