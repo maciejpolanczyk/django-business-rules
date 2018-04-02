@@ -3,6 +3,7 @@ import pkgutil
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import six
 
 from django_business_rules.business_rule import BusinessRule
 from django_business_rules.models import BusinessRuleModel
@@ -15,6 +16,26 @@ class BusinessRuleGenerateException(Exception):
 class Command(BaseCommand):
     help = 'Updates rules data in database'
     BUSINESS_RULE_MODULE_NAME = 'rules'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--noinput', '--no-input',
+            action='store_false',
+            dest='interactive',
+            help='Tells Django to NOT prompt the user for input of any kind.'
+        )
+        parser.add_argument(
+            '-r',
+            action='store_true',
+            dest='remove',
+            help='Removes from DB rules which are not supported by code any more.'
+        )
+        parser.add_argument(
+            '-c',
+            action='store_true',
+            dest='clean',
+            help='Clean rules in DB which doesn\'t compile with currenct source code.'
+        )
 
     def handle(self, *args, **options):
         self.stdout.write('This command will override all rules data in database.')
@@ -64,16 +85,50 @@ class Command(BaseCommand):
                 )
             unique_rule_names[name] = rule_class
 
-        self._debug('Vaidation done', options)
+        self._debug('Validation done', options)
 
     def _save(self, business_rule_classes, options):
-        self._debug('Deleting business rules', options)
-        BusinessRuleModel.objects.all().delete()
+        self._remove_not_supported_rules(business_rule_classes, options)
         self._debug('Saving business rules...', options)
         for rule_class in business_rule_classes:
             self._debug('Generating: {}'.format(rule_class.get_name()), options)
             rule_class.generate()
         self._debug('Saving done.', options)
+
+    def _remove_not_supported_rules(self, business_rule_classes, options):
+        self._debug('Removing business rules not supported by source code...', options)
+        supported_business_rule_names = [
+            business_rule_class.get_name() for business_rule_class in business_rule_classes
+        ]
+        not_supported_business_rules_query = BusinessRuleModel.objects.exclude(name__in=supported_business_rule_names)
+        not_supported_business_rule_names = [
+            business_rule_model.name
+            for business_rule_model in not_supported_business_rules_query
+        ]
+        if not not_supported_business_rule_names:
+            self._debug('Nothing to delete', options)
+            return
+
+        if not options['interactive']:
+            if options['remove']:
+                not_supported_business_rules_query.delete()
+                self._debug(
+                    'Removed rules not supported by source code:\n- ' + '\n- '.join(not_supported_business_rule_names),
+                    options
+                )
+            else:
+                self._debug(
+                    'Left rules not supported by source code:\n- ' + '\n- '.join(not_supported_business_rule_names),
+                    options
+                )
+        else:
+            self.stdout.write('\n'.join(not_supported_business_rule_names))
+            delete_rules = six.input(
+                'These rules exist in DB but are no longer supported by source code, should they be deleted?(y/N)'
+            )
+            if delete_rules in ['Y', 'y', 'Yes', 'yes']:
+                not_supported_business_rules_query.delete()
+                self._debug('Rules removed', options)
 
     def _debug(self, text, options):
         if options['verbosity'] > 1:

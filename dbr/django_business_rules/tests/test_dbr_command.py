@@ -4,7 +4,7 @@ from mock import patch, MagicMock
 
 from django.core.management import call_command
 from django.test.testcases import TestCase
-from django.utils.six import StringIO
+from django.utils import six
 
 from django_business_rules.management.commands import dbr
 from django_business_rules.management.commands.dbr import BusinessRuleGenerateException
@@ -20,7 +20,7 @@ class DbrCommandTests(TestCase):
     @patch.object(dbr.Command, '_save', MagicMock)
     def test_should_find_BusinessRule_subclasses(self):
         # GIVEN
-        out = StringIO()
+        out = six.StringIO()
         try:
             # WHEN
             call_command(self.COMMAND_NAME, verbosity=2, stdout=out)
@@ -41,7 +41,7 @@ class DbrCommandTests(TestCase):
             self._get_mock_for_business_class(name='test.business_rule_1'),
             self._get_mock_for_business_class(name='test.business_rule_1'),
         ]
-        out = StringIO()
+        out = six.StringIO()
         expected_message = 'Not unique names for classes: '
         try:
             # WHEN & THEN
@@ -56,7 +56,7 @@ class DbrCommandTests(TestCase):
         # GIVEN
         mock_for_business_class = self._get_mock_for_business_class(name='test.business_rule_1')
         mock_for_find.return_value = [mock_for_business_class]
-        out = StringIO()
+        out = six.StringIO()
         try:
             # WHEN
             call_command(self.COMMAND_NAME, verbosity=2, stdout=out)
@@ -71,7 +71,7 @@ class DbrCommandTests(TestCase):
         # GIVEN
         mock_for_find.return_value = [ProductBusinessRule]
         self.assertEqual(0, BusinessRuleModel.objects.count())
-        out = StringIO()
+        out = six.StringIO()
         try:
             # WHEN
             call_command(self.COMMAND_NAME, verbosity=2, stdout=out)
@@ -81,6 +81,102 @@ class DbrCommandTests(TestCase):
                 BusinessRuleModel.objects.filter(
                     name=ProductBusinessRule.get_name()
                 ).count()
+            )
+        except Exception:
+            self._print_output(out)
+            raise
+
+    @patch.object(dbr.Command, '_find_business_rule_classes')
+    def test_should_remove_not_supported_rules(self, mock_for_find):
+        # GIVEN
+        mock_for_find.return_value = [ProductBusinessRule]
+        self.assertEqual(0, BusinessRuleModel.objects.count())
+        out = six.StringIO()
+        BusinessRuleModel.objects.create(
+            name='Not supported rule',
+            description='',
+            rule_data='',
+        )
+        try:
+            # WHEN
+            call_command(self.COMMAND_NAME, verbosity=2, stdout=out, interactive=False, remove=True)
+            # THEN
+            self.assertEqual(
+                1,
+                BusinessRuleModel.objects.count()
+            )
+        except Exception:
+            self._print_output(out)
+            raise
+
+    @patch.object(dbr.Command, '_find_business_rule_classes')
+    def test_should_not_remove_not_supported_rules(self, mock_for_find):
+        # GIVEN
+        mock_for_find.return_value = [ProductBusinessRule]
+        self.assertEqual(0, BusinessRuleModel.objects.count())
+        out = six.StringIO()
+        BusinessRuleModel.objects.create(
+            name='Not supported rule',
+            description='',
+            rule_data='',
+        )
+        try:
+            # WHEN
+            call_command(self.COMMAND_NAME, verbosity=2, stdout=out, interactive=False)
+            # THEN
+            self.assertEqual(
+                2,
+                BusinessRuleModel.objects.count()
+            )
+        except Exception:
+            self._print_output(out)
+            raise
+
+    @patch.object(dbr.Command, '_find_business_rule_classes')
+    @patch.object(six, 'input')
+    def test_should_remove_not_supported_rules_in_interactive_mode(self, mock_for_input, mock_for_find):
+        # GIVEN
+        mock_for_find.return_value = [ProductBusinessRule]
+        self.assertEqual(0, BusinessRuleModel.objects.count())
+        out = six.StringIO()
+        mock_for_input.return_vale = 'T'
+        BusinessRuleModel.objects.create(
+            name='Not supported rule',
+            description='',
+            rule_data='',
+        )
+        try:
+            # WHEN
+            call_command(self.COMMAND_NAME, verbosity=2, stdout=out, interactive=False, remove=True)
+            # THEN
+            self.assertEqual(
+                1,
+                BusinessRuleModel.objects.count()
+            )
+        except Exception:
+            self._print_output(out)
+            raise
+
+    @patch.object(dbr.Command, '_find_business_rule_classes')
+    @patch.object(six, 'input')
+    def test_should_not_remove_not_supported_rules_in_interactive_mode(self, mock_for_input, mock_for_find):
+        # GIVEN
+        mock_for_find.return_value = [ProductBusinessRule]
+        self.assertEqual(0, BusinessRuleModel.objects.count())
+        out = six.StringIO()
+        mock_for_input.return_vale = ''
+        BusinessRuleModel.objects.create(
+            name='Not supported rule',
+            description='',
+            rule_data='',
+        )
+        try:
+            # WHEN
+            call_command(self.COMMAND_NAME, verbosity=2, stdout=out, interactive=True)
+            # THEN
+            self.assertEqual(
+                2,
+                BusinessRuleModel.objects.count()
             )
         except Exception:
             self._print_output(out)
