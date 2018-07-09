@@ -1,41 +1,134 @@
-var conditions, actions, submit, allData;
+var actions, conditions, form, submit, rule_set;
 (function($) {
 
   function onReady() {
-    conditions = $('#conditions');
-    actions = $('#actions');
-    form = $('#br_form');
-    rules = JSON.parse($('#rules').val());
-    ruleData = JSON.parse($('#rule_data').val());
 
-    initializeConditions(ruleData, rules);
-    initializeActions(ruleData, rules);
+    conditions = [];
+    actions = [];
+
+    rules = JSON.parse($('#rules').val());
+    rule_set = $('.rule_set');
+    ruleData = JSON.parse($('#rule_data').val());
+    form = $('#br_form');
+
+    if (rules.length == 0 || typeof(rules.length) == 'undefined') {
+        appendEmptyRule();
+    } else {
+      $.each(rules, function(index, one_rule){
+        rule_set.append(getRule());
+      });
+      $.each(rules, function(index, one_rule){
+        addConditionsActions(index);
+      });
+
+      initializeConditions(ruleData, rules);
+      initializeActions(ruleData, rules);
+    }
     initializeForm();
+  }
+
+  function addConditionsActions(index) {
+    conditions.splice(
+      index, 0, rule_set.find('.one_rule:eq(' + index + ')').find('.conditions').first()
+    )
+    actions.splice(
+      index, 0, rule_set.find('.one_rule:eq(' + index + ')').find('.actions').first()
+    )
   }
 
   function initializeConditions(ruleData, rules) {
     data = ruleData;
-    if (rules.length > 0) {
-        data['data'] = rules[0].conditions;
-    }
-    conditions.conditionsBuilder(data)
+    $.each(rules, function(index, one_rule){
+      data['data'] = one_rule.conditions;
+      conditions[index].conditionsBuilder(data)
+    });
   }
 
   function initializeActions(ruleData, rules) {
     data = ruleData;
-    if (rules.length > 0) {
-        data['data'] = rules[0].actions;
+    $.each(rules, function(index, one_rule){
+      data['data'] = one_rule.actions;
+      actions[index].actionsBuilder(data)
+    });
+  }
+
+  function getRule() {
+    // TODO use the django language processor for phrases
+    var one_rule = $("<div>", {"class": "one_rule"});
+    one_rule.append($('<h2>When these conditions are met...</h2>'));
+    one_rule.append($("<div>", {"class": "conditions"}));
+    one_rule.append($('<h2>Do these actions...</h2>'));
+    one_rule.append($("<div>", {"class": "actions"}));
+
+    var insertRuleLink = $("<a>", {"href": "#", "text": "Insert Rule Below"});
+    insertRuleLink.click(function(e) {
+      e.preventDefault();
+      insertEmptyRuleAfter(one_rule);
+    });
+    one_rule.append(insertRuleLink);
+
+    var moveUpLink = $("<a>", {"class": "remove", "href": "#", "text": "Move Rule Up"});
+    moveUpLink.click(function(e) {
+      e.preventDefault();
+      moveRuleUp(one_rule);
+    });
+    one_rule.append(moveUpLink);
+
+    var removeLink = $("<a>", {"class": "remove", "href": "#", "text": "Remove Preceding Rule"});
+    removeLink.click(function(e) {
+      e.preventDefault();
+      one_rule.remove();
+    });
+    one_rule.append(removeLink);
+
+    return one_rule;
+  }
+
+  function appendEmptyRule() {
+    var index = rule_set.find('.one_rule').length || 0;
+    rule_set.append(getRule());
+    initializeEmptyRule(index);
+  }
+
+  function insertEmptyRuleAfter(a_rule) {
+    var index = rule_set.find('.one_rule').index(a_rule);
+    getRule().insertAfter(a_rule);
+    initializeEmptyRule(index + 1);
+  }
+
+  function initializeEmptyRule(index) {
+    addConditionsActions(index)
+    var data = ruleData;
+    data['data'] = null;
+    conditions[index].conditionsBuilder(data);
+    actions[index].actionsBuilder(data);
+  }
+
+  function moveRuleUp(a_rule) {
+    var index = rule_set.find('.one_rule').index(a_rule);
+    if (index == 0) {
+      return;
     }
-    actions.actionsBuilder(data);
+    a_rule.insertBefore(a_rule.prev());
+    var tmp = conditions[index];
+    conditions[index] = conditions[index - 1];
+    conditions[index - 1] = tmp;
+
+    tmp = actions[index];
+    actions[index] = actions[index - 1];
+    actions[index - 1] = tmp;
   }
 
   function initializeForm() {
-
     form.submit(function(e) {
-      rules = [{
-        'conditions': conditions.conditionsBuilder('data'),
-        'actions': actions.actionsBuilder('data')
-      }];
+      var rule_set = $('.rule_set').find('.one_rule');
+      var rules = []
+      rule_set.each(function(index, one_rule){
+        rules[index] = {
+          'conditions': conditions[index].conditionsBuilder('data'),
+          'actions': actions[index].actionsBuilder('data')
+        }
+      });
       $('#rules').val(JSON.stringify(rules));
       return true;
     });
