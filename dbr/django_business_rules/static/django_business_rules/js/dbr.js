@@ -1,10 +1,9 @@
-var actions, conditions, form, submit, rule_set;
+var actions_conditions, form, submit, rule_set;
 (function($) {
 
   function onReady() {
 
-    conditions = [];
-    actions = [];
+    actions_conditions = [];
 
     rules = JSON.parse($('#rules').val());
     rule_set = $('.rule_set');
@@ -16,39 +15,29 @@ var actions, conditions, form, submit, rule_set;
     } else {
       $.each(rules, function(index, one_rule){
         rule_set.append(getRule());
-      });
-      $.each(rules, function(index, one_rule){
-        addConditionsActions(index);
+        addActionsConditions(index);
       });
 
-      initializeConditions(ruleData, rules);
-      initializeActions(ruleData, rules);
+      initializeActionsConditions(ruleData, rules);
     }
     initializeForm();
   }
 
-  function addConditionsActions(index) {
-    conditions.splice(
-      index, 0, rule_set.find('.one_rule:eq(' + index + ')').find('.conditions').first()
-    )
-    actions.splice(
-      index, 0, rule_set.find('.one_rule:eq(' + index + ')').find('.actions').first()
-    )
+  function addActionsConditions(index) {
+    var rule_object = {
+        conditions: rule_set.find('.one_rule:eq(' + index + ')').find('.conditions').first(),
+        actions: rule_set.find('.one_rule:eq(' + index + ')').find('.actions').first()
+    }
+    actions_conditions.splice(index, 0, rule_object);
   }
 
-  function initializeConditions(ruleData, rules) {
+  function initializeActionsConditions(ruleData, rules) {
     data = ruleData;
     $.each(rules, function(index, one_rule){
       data['data'] = one_rule.conditions;
-      conditions[index].conditionsBuilder(data)
-    });
-  }
-
-  function initializeActions(ruleData, rules) {
-    data = ruleData;
-    $.each(rules, function(index, one_rule){
+      actions_conditions[index]['conditions'].conditionsBuilder(data)
       data['data'] = one_rule.actions;
-      actions[index].actionsBuilder(data)
+      actions_conditions[index]['actions'].actionsBuilder(data)
     });
   }
 
@@ -77,6 +66,8 @@ var actions, conditions, form, submit, rule_set;
     var removeLink = $("<a>", {"class": "remove", "href": "#", "text": "Remove Preceding Rule"});
     removeLink.click(function(e) {
       e.preventDefault();
+      var index = rule_set.find('.one_rule').index(one_rule);
+      actions_conditions.splice(index, 1);
       one_rule.remove();
     });
     one_rule.append(removeLink);
@@ -97,11 +88,11 @@ var actions, conditions, form, submit, rule_set;
   }
 
   function initializeEmptyRule(index) {
-    addConditionsActions(index)
+    addActionsConditions(index)
     var data = ruleData;
     data['data'] = null;
-    conditions[index].conditionsBuilder(data);
-    actions[index].actionsBuilder(data);
+    actions_conditions[index]['conditions'].conditionsBuilder(data);
+    actions_conditions[index]['actions'].actionsBuilder(data);
   }
 
   function moveRuleUp(a_rule) {
@@ -110,13 +101,9 @@ var actions, conditions, form, submit, rule_set;
       return;
     }
     a_rule.insertBefore(a_rule.prev());
-    var tmp = conditions[index];
-    conditions[index] = conditions[index - 1];
-    conditions[index - 1] = tmp;
-
-    tmp = actions[index];
-    actions[index] = actions[index - 1];
-    actions[index - 1] = tmp;
+    var tmp = actions_conditions[index];
+    actions_conditions[index] = actions_conditions[index - 1];
+    actions_conditions[index - 1] = tmp;
   }
 
   function initializeForm() {
@@ -125,8 +112,8 @@ var actions, conditions, form, submit, rule_set;
       var rules = []
       rule_set.each(function(index, one_rule){
         rules[index] = {
-          'conditions': conditions[index].conditionsBuilder('data'),
-          'actions': actions[index].actionsBuilder('data')
+          'conditions': actions_conditions[index]['conditions'].conditionsBuilder('data'),
+          'actions': actions_conditions[index]['actions'].actionsBuilder('data')
         }
       });
       $('#rules').val(JSON.stringify(rules));
