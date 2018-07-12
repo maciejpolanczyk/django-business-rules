@@ -25,6 +25,7 @@ var actions_conditions, form, submit, rule_set;
 
   function addActionsConditions(index) {
     var rule_object = {
+        name: rule_set.find('.one_rule:eq(' + index + ')').find('.rule_name').first(),
         conditions: rule_set.find('.one_rule:eq(' + index + ')').find('.conditions').first(),
         actions: rule_set.find('.one_rule:eq(' + index + ')').find('.actions').first()
     }
@@ -34,6 +35,7 @@ var actions_conditions, form, submit, rule_set;
   function initializeActionsConditions(ruleData, rules) {
     data = ruleData;
     $.each(rules, function(index, one_rule){
+      actions_conditions[index]['name'].val(one_rule.name);
       data['data'] = one_rule.conditions;
       actions_conditions[index]['conditions'].conditionsBuilder(data)
       data['data'] = one_rule.actions;
@@ -44,26 +46,34 @@ var actions_conditions, form, submit, rule_set;
   function getRule() {
     // TODO use the django language processor for phrases
     var one_rule = $("<div>", {"class": "one_rule"});
-    one_rule.append($('<h2>When these conditions are met...</h2>'));
-    one_rule.append($("<div>", {"class": "conditions"}));
-    one_rule.append($('<h2>Do these actions...</h2>'));
-    one_rule.append($("<div>", {"class": "actions"}));
 
-    var insertRuleLink = $("<a>", {"href": "#", "text": "Insert Rule Below"});
+    var rule_name_label = $("<label>", {"text": "Rule Name:"});
+    var rule_name = $("<input>", {"class": "rule_name", "type": "text"});
+    rule_name_label.append(rule_name);
+    one_rule.append(rule_name_label);
+
+    var toggleDetail = $("<a>", {"class": "rule_control", "href": "#", "text": "Toggle Rule Detail"});
+    toggleDetail.click(function(e) {
+      e.preventDefault();
+      one_rule.find('.rule_detail').toggleClass('hidden');
+    });
+    one_rule.append(toggleDetail);
+
+    var insertRuleLink = $("<a>", {"class": "rule_control", "href": "#", "text": "Insert Rule Below"});
     insertRuleLink.click(function(e) {
       e.preventDefault();
       insertEmptyRuleAfter(one_rule);
     });
     one_rule.append(insertRuleLink);
 
-    var moveUpLink = $("<a>", {"class": "remove", "href": "#", "text": "Move Rule Up"});
+    var moveUpLink = $("<a>", {"class": "rule_control", "href": "#", "text": "Move Rule Up"});
     moveUpLink.click(function(e) {
       e.preventDefault();
       moveRuleUp(one_rule);
     });
     one_rule.append(moveUpLink);
 
-    var removeLink = $("<a>", {"class": "remove", "href": "#", "text": "Remove Preceding Rule"});
+    var removeLink = $("<a>", {"class": "rule_control remove", "href": "#", "text": "Remove Rule"});
     removeLink.click(function(e) {
       e.preventDefault();
       var index = rule_set.find('.one_rule').index(one_rule);
@@ -71,6 +81,13 @@ var actions_conditions, form, submit, rule_set;
       one_rule.remove();
     });
     one_rule.append(removeLink);
+
+    var rule_detail = $("<div>", {"class": "rule_detail hidden"});
+    rule_detail.append($('<h2>When these conditions are met...</h2>'));
+    rule_detail.append($("<div>", {"class": "conditions"}));
+    rule_detail.append($('<h2>Do these actions...</h2>'));
+    rule_detail.append($("<div>", {"class": "actions"}));
+    one_rule.append(rule_detail);
 
     return one_rule;
   }
@@ -112,6 +129,7 @@ var actions_conditions, form, submit, rule_set;
       var rules = []
       rule_set.each(function(index, one_rule){
         rules[index] = {
+          'name': $(actions_conditions[index]['name']).val(),
           'conditions': actions_conditions[index]['conditions'].conditionsBuilder('data'),
           'actions': actions_conditions[index]['actions'].actionsBuilder('data')
         }

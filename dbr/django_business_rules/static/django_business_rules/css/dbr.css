@@ -1,3 +1,12 @@
+.rule_set {
+  margin-top: 7px;
+}
+
+.rule_name {
+  width: 240px;
+  margin-left: 3px;
+}
+
 .conditions, .actions {
   margin: 20px 0;
 }
@@ -15,11 +24,11 @@
   padding-left: 60px;
 }
 
-  .conditional .all-any-wrapper {
-    margin: 5px 20px 5px -60px;
-    display: -moz-inline-stack;
-    display: inline-block;
-  }
+.conditional .all-any-wrapper {
+  margin: 5px 20px 5px -60px;
+  display: -moz-inline-stack;
+  display: inline-block;
+}
 
 .all-any {
   margin-right: 10px;
@@ -90,6 +99,21 @@ a.button {
 .one_rule {
   padding: 3px;
 }
-.one_rule:nth-of-type(even) {
-  background-color: #ddd;
+
+.one_rule:nth-of-type(3n - 1) {
+  background-color: #eee;
+}
+.one_rule:nth-of-type(3n) {
+   background-color: #ddd;
+ }
+.one_rule:nth-of-type(10n) {
+  background-color: #cce;
+}
+
+
+.hidden {
+  display: none;
+}
+.rule_control {
+  margin: 5px;
 }
