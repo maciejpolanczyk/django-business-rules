@@ -47,12 +47,12 @@ var actions_conditions, form, submit, rule_set;
     // TODO use the django language processor for phrases
     var one_rule = $("<div>", {"class": "one_rule"});
 
-    var rule_name_label = $("<label>", {"text": "Rule Name:"});
+    var rule_name_label = $("<label>", {"text": "Name:"});
     var rule_name = $("<input>", {"class": "rule_name", "type": "text"});
     rule_name_label.append(rule_name);
     one_rule.append(rule_name_label);
 
-    var toggleDetail = $("<a>", {"class": "rule_control", "href": "#", "text": "Toggle Rule Detail"});
+    var toggleDetail = $("<a>", {"class": "rule_control", "href": "#", "text": "Toggle Detail"});
     toggleDetail.click(function(e) {
       e.preventDefault();
       one_rule.find('.rule_detail').toggleClass('hidden');
