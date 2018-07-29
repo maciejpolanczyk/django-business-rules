@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.7
 
 # Wheel install (needed for proper installing some other libraries), pip upgrade
 RUN pip3 install --upgrade pip wheel

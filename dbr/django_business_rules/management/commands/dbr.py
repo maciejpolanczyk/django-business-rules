@@ -30,12 +30,6 @@ class Command(BaseCommand):
             dest='remove',
             help='Removes from DB rules which are not supported by code any more.'
         )
-        parser.add_argument(
-            '-c',
-            action='store_true',
-            dest='clean',
-            help='Clean rules in DB which doesn\'t compile with currenct source code.'
-        )
 
     def handle(self, *args, **options):
         self.stdout.write('This command will override all rules data in database.')
