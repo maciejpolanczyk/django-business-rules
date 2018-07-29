@@ -5,6 +5,7 @@ Django Business Rules
 [![pypi-version]][pypi]
 
 # Overview
+
 With this plugin django users (customers or administrators) can setup business rules with html forms. Default layout is similar to django admin panel and can be easily overridden.
 Business rules engine is implemented with [business-rules][business-rules-lib]
 
@@ -31,6 +32,7 @@ Add `'django_business_rules'` to your `INSTALLED_APPS` setting.
 Let's take a look at a quick example of using Business rules plugin.
 
 ## Setup
+
 Startup up a new project like so...
 
     pip install django django-business-rules
@@ -197,8 +199,24 @@ That's it, we're done!
 
 You can now open the list of business rules in your browser at `http://127.0.0.1:8000/dbr/business-rule/` and edit them.
 
+# Contribution
+
+Open up a pull request, making sure to add tests for any new functionality. To set up the dev environment (assuming you're using [virtualenvwrapper][virtualenvwrapper-url] and [docker][docker-url]):
+
+```bash
+$ mkvirtualenv django-business-rules
+$ pip install -r dbr/requirements-development.txt
+$ pip install -r dbr/requirements-django1.11.txt # (for python 2.7)
+$ pip install -r dbr/requirements-django2.0.txt # (for python 3)
+$ ./test.sh
+$ ./build.sh
+```
+
+
 [build-status-image]: https://travis-ci.org/maciejpolanczyk/django-business-rules.svg?branch=master
-[travis]: https://travis-ci.org/maciejpolanczyk/django-business-rules?branch=master
+[business-rules-lib]: https://github.com/venmo/business-rules
+[docker-url]: https://docs.docker.com/install
 [pypi-version]: https://pypip.in/version/django-business-rules/badge.svg
 [pypi]: https://pypi.python.org/pypi/django-business-rules
-[business-rules-lib]: https://github.com/venmo/business-rules
+[travis]: https://travis-ci.org/maciejpolanczyk/django-business-rules?branch=master
+[virtualenvwrapper-url]: http://docs.python-guide.org/en/latest/dev/virtualenvs/#virtualenvwrapper
