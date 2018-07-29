@@ -10,8 +10,8 @@ Business rules engine is implemented with [business-rules][business-rules-lib]
 
 # Requirements
 
-* Python (2.7, 3.4, 3.5, 3.6)
-* Django (1.9, 1.10, 1.11, 2.0)
+* Python (2.7, 3.4, 3.5, 3.6, 3.7)
+* Django (1.9, 1.10, 1.11, 2.0.7)
 
 # Installation
 
