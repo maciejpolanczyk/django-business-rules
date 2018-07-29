@@ -1,8 +1,9 @@
-#conditions, #actions {
+.conditions, .actions {
   margin: 20px 0;
 }
 
-#conditions > .conditional > .remove, #actions > .conditional > .remove {
+.conditions > .conditional > .remove,
+.actions > .conditional > .remove {
   display: none;
 }
 
@@ -84,4 +85,11 @@
 
 a.button {
   padding: 10px 15px;
+}
+
+.one_rule {
+  padding: 3px;
+}
+.one_rule:nth-of-type(even) {
+  background-color: #ddd;
 }

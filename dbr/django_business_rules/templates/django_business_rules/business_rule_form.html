@@ -24,15 +24,9 @@
 
 {% block content %}
 
-    <div>{{ form.instance.description }}</div>
+  <div>{{ form.instance.description }}</div>
 
-    <h2> {% trans 'When these conditions are met...' %} </h2>
-    <div id="conditions"></div>
-
-    <h2> {% trans 'Do these actions...' %} </h2>
-    <div id="actions"></div>
-
-
+  <div class="rule_set"> </div>
 
   <form id="br_form" name="br_form" action="" method="post">{% csrf_token %}
 
