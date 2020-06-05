@@ -1,2 +1,2 @@
 business-rules==1.0.1
-Django==1.11
+Django==2.2.13
