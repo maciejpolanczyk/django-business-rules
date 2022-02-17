@@ -41,5 +41,6 @@ setup(
     ],
     install_requires=[
         'business-rules==1.0.1',
+        'six==1.16.0'
     ],
 )
