@@ -4,5 +4,5 @@ from django.apps import AppConfig
 
 
 class DbrAppConfig(AppConfig):
-    name = 'django_business_rules'
-    verbose_name = 'Django Business Rules'
+    name = "django_business_rules"
+    verbose_name = "Django Business Rules"

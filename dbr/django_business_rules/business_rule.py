@@ -9,7 +9,7 @@ from django_business_rules.models import BusinessRuleModel
 
 class BusinessRule(object):
     name = None
-    description = ''
+    description = ""
     variables = None
     actions = None
 
@@ -29,10 +29,10 @@ class BusinessRule(object):
     @classmethod
     def _get_update_values(cls):
         update_values = {
-            'rule_data': cls._get_rule_data(),
+            "rule_data": cls._get_rule_data(),
         }
         if cls.description:
-            update_values['description'] = cls.description
+            update_values["description"] = cls.description
         return update_values
 
     @classmethod
@@ -46,7 +46,7 @@ class BusinessRule(object):
             rule_list=cls.get_rules(),
             defined_variables=cls._get_variables_instance(obj),
             defined_actions=cls._get_actions_instance(obj),
-            stop_on_first_trigger=stop_on_first_trigger
+            stop_on_first_trigger=stop_on_first_trigger,
         )
 
     @classmethod
@@ -80,7 +80,7 @@ class BusinessRule(object):
 
     @classmethod
     def _get_default_name(cls):
-        return '{}.{}'.format(cls.__module__, cls.__name__)
+        return "{}.{}".format(cls.__module__, cls.__name__)
 
     @classmethod
     def _get_object_from_json(cls, text):

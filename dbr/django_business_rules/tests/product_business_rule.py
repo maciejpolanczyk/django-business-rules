@@ -17,13 +17,13 @@ class ProductActions(BaseActions):
 
 
 class ProductBusinessRule(BusinessRule):
-    name = 'django_business_rules.tests.product_business_rule.ProductBusinessRule'
+    name = "django_business_rules.tests.product_business_rule.ProductBusinessRule"
     variables = ProductVariables
     actions = ProductActions
 
 
 class ProductBusinessRuleToTestUpdate(BusinessRule):
-    name = 'django_business_rules.tests.product_business_rule.ProductBusinessRule'
-    description = 'updated ProductBusinessRule'
+    name = "django_business_rules.tests.product_business_rule.ProductBusinessRule"
+    description = "updated ProductBusinessRule"
     variables = ProductVariables
     actions = ProductActions

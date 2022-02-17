@@ -15,7 +15,7 @@ from test_app.tests.data.test_resource_provider import TestResourceProvider
 
 class DbrCommandTests(TestCase):
 
-    COMMAND_NAME = 'dbr'
+    COMMAND_NAME = "dbr"
 
     def test_should_save_rule_in_database(self):
         # GIVEN
@@ -26,23 +26,17 @@ class DbrCommandTests(TestCase):
             # WHEN
             call_command(self.COMMAND_NAME, verbosity=2, stdout=out)
             # THEN
-            self.assertEqual(
-                self._get_rule_data(),
-                ProductBusinessRule.get_rule_data()
-            )
+            self.assertEqual(self._get_rule_data(), ProductBusinessRule.get_rule_data())
         except Exception:
             self._print_output(out)
             raise
 
     def _get_rule_data(self):
-        return self._get_json_test_resource('rule_data.json')
+        return self._get_json_test_resource("rule_data.json")
 
     def _get_json_test_resource(self, file_name):
         with open(
-                os.path.join(
-                    TestResourceProvider.get_test_data_dir(),
-                    file_name
-                )
+            os.path.join(TestResourceProvider.get_test_data_dir(), file_name)
         ) as file_path:
             return json.load(file_path)
 
