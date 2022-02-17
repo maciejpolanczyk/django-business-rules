@@ -8,23 +8,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('django_business_rules', '0001_initial'),
+        ("django_business_rules", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='businessrulemodel',
-            name='description',
-            field=models.TextField(blank=True, verbose_name='description'),
+            model_name="businessrulemodel",
+            name="description",
+            field=models.TextField(blank=True, verbose_name="description"),
         ),
         migrations.AlterField(
-            model_name='businessrulemodel',
-            name='name',
-            field=models.TextField(unique=True, verbose_name='name'),
+            model_name="businessrulemodel",
+            name="name",
+            field=models.TextField(unique=True, verbose_name="name"),
         ),
         migrations.AlterField(
-            model_name='businessrulemodel',
-            name='rules',
-            field=models.TextField(default={}, verbose_name='rules'),
+            model_name="businessrulemodel",
+            name="rules",
+            field=models.TextField(default={}, verbose_name="rules"),
         ),
     ]

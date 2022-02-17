@@ -8,13 +8,13 @@ class DummyBusinessRule(BusinessRule):
 
 
 class DummyBusinessRuleWithName(BusinessRule):
-    name = 'test_name'
+    name = "test_name"
 
 
 class DummyBusinessRuleWithVariables(BusinessRule):
-    variables = 'test'
+    variables = "test"
 
 
 class DummyBusinessRuleWithVariablesAndActions(BusinessRule):
-    variables = 'test'
-    actions = 'test'
+    variables = "test"
+    actions = "test"

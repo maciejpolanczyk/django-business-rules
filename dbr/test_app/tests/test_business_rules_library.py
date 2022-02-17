@@ -37,17 +37,17 @@ class BusinessRulesLibraryTests(TestCase):
         mommy.make(
             ProductOrder,
             product=product_for_sale,
-            expiration_date=timezone.now()+timezone.timedelta(days=4)
+            expiration_date=timezone.now() + timezone.timedelta(days=4),
         )
         mommy.make(
             ProductOrder,
             product=product_not_for_sale_1,
-            expiration_date=timezone.now() + timezone.timedelta(days=4)
+            expiration_date=timezone.now() + timezone.timedelta(days=4),
         )
         mommy.make(
             ProductOrder,
             product=product_not_for_sale_2,
-            expiration_date=timezone.now() + timezone.timedelta(days=5)
+            expiration_date=timezone.now() + timezone.timedelta(days=5),
         )
 
         rules = self._get_rules()
@@ -57,7 +57,7 @@ class BusinessRulesLibraryTests(TestCase):
                 rule_list=rules,
                 defined_variables=ProductVariables(product),
                 defined_actions=ProductActions(product),
-                stop_on_first_trigger=True
+                stop_on_first_trigger=True,
             )
         # THEN
         product_for_sale.refresh_from_db()
@@ -68,7 +68,7 @@ class BusinessRulesLibraryTests(TestCase):
         self.assertEqual(product_not_for_sale_2.price, 200)
 
     @factory.django.mute_signals(signals.post_save)
-    @freeze_time('2015, 6, 1')
+    @freeze_time("2015, 6, 1")
     def test_should_execute_rules_2(self):
         # GIVEN
         product_for_order = mommy.make(Product, current_inventory=4, price=200)
@@ -77,7 +77,7 @@ class BusinessRulesLibraryTests(TestCase):
         self._assert_rule_executed(product_for_order, product_not_for_order)
 
     @factory.django.mute_signals(signals.post_save)
-    @freeze_time('2015, 12, 1')
+    @freeze_time("2015, 12, 1")
     def test_should_execute_rules_3(self):
         # GIVEN
         product_for_order = mommy.make(Product, current_inventory=19, price=200)
@@ -90,24 +90,20 @@ class BusinessRulesLibraryTests(TestCase):
         mommy.make(
             ProductOrder,
             product=product_for_order,
-            expiration_date=datetime.datetime.now() + timezone.timedelta(days=4)
+            expiration_date=datetime.datetime.now() + timezone.timedelta(days=4),
         )
         mommy.make(
             ProductOrder,
             product=product_not_for_order,
-            expiration_date=datetime.datetime.now() + timezone.timedelta(days=4)
+            expiration_date=datetime.datetime.now() + timezone.timedelta(days=4),
         )
 
         self.assertFalse(
-            ProductOrder.objects.filter(
-                product=product_for_order,
-                quantity=40
-            ).exists()
+            ProductOrder.objects.filter(product=product_for_order, quantity=40).exists()
         )
         self.assertFalse(
             ProductOrder.objects.filter(
-                product=product_not_for_order,
-                quantity=40
+                product=product_not_for_order, quantity=40
             ).exists()
         )
 
@@ -118,33 +114,26 @@ class BusinessRulesLibraryTests(TestCase):
                 rule_list=rules,
                 defined_variables=ProductVariables(product),
                 defined_actions=ProductActions(product),
-                stop_on_first_trigger=True
+                stop_on_first_trigger=True,
             )
         # THEN
         self.assertTrue(
-            ProductOrder.objects.filter(
-                product=product_for_order,
-                quantity=40
-            ).exists()
+            ProductOrder.objects.filter(product=product_for_order, quantity=40).exists()
         )
         self.assertFalse(
             ProductOrder.objects.filter(
-                product=product_not_for_order,
-                quantity=40
+                product=product_not_for_order, quantity=40
             ).exists()
         )
 
     def _get_rule_data(self):
-        return self._get_json_test_resource('rule_data.json')
+        return self._get_json_test_resource("rule_data.json")
 
     def _get_rules(self):
-        return self._get_json_test_resource('rules.json')
+        return self._get_json_test_resource("rules.json")
 
     def _get_json_test_resource(self, file_name):
         with open(
-                os.path.join(
-                    TestResourceProvider.get_test_data_dir(),
-                    file_name
-                )
+            os.path.join(TestResourceProvider.get_test_data_dir(), file_name)
         ) as file_path:
             return json.load(file_path)
